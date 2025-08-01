@@ -1,24 +1,20 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Injectable, Post } from '@nestjs/common';
 import { PrismaService } from './database/prisma.service';
+import { randomUUID } from 'crypto';
+import { CreateMemberBody } from './dtos/create-member-body';
+import { MemberRepository } from './repository/member-repository';
 
 @Controller('app')
 export class AppController {
   constructor(
-    private prisma : PrismaService,
+   private MemberRepository: MemberRepository
     ) {
   }
 
-  @Get('hello')
-  async getHello() {
-    const member = await this.prisma.member.create({
-      data: {
-        id: 'capitao',
-        name: 'guilherme Capitão',
-        function: 'Capitão do time',
-      }
-    })
-    return {
-      member,
-    }
+  @Post('hello')
+  async getHello(@Body() body: CreateMemberBody) {
+    const {name,memberFunction} = body;
+   await this.MemberRepository.create(name,memberFunction)
+
   }
 }
