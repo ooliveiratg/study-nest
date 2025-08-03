@@ -1,0 +1,7 @@
+    private = privado
+    
+    readonly = só para a leitura
+
+    createEventRepository = injetando o repositório(classe)
+
+    O constructor é usado principalmente para injeção de dependências. Ou seja, para receber outros serviços, repositórios, etc. dentro de uma classe.
