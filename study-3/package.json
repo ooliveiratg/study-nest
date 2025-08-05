@@ -20,6 +20,8 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.13.0",
+    "@types/bcrypt": "^6.0.0",
+    "bcrypt": "^6.0.0",
     "D": "^1.0.0",
     "init": "^0.1.2",
     "reflect-metadata": "^0.2.2",
