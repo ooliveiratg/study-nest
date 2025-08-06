@@ -42,5 +42,6 @@ export class CreateAccoutController {
                     password : hashedPassword
                 }
             });
+            return { message: 'Account created successfully'};
         }
     }
