@@ -2,7 +2,7 @@ import { Body, ConflictException, Controller, HttpCode, Post, UsePipes } from "@
 import { PrismaService } from "src/prisma/prisma.service";
 import { hash } from 'bcrypt';
 import { z }    from 'zod';
-import { ZodValidationPipe } from "src/pipes/zod-validation-pipe";
+import { ZodValidationPipe } from "src/security/pipes/zod-validation-pipe";
 
 const createAccountSchema = z.object({
     name: z.string().min(2).max(100),

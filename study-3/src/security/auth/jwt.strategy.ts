@@ -7,11 +7,11 @@ import { z } from "zod";
 
 
 
-const tokenSchema = z.object({
+const tokenPayload = z.object({
     sub: z.string().uuid(),
 })
 
-type TokenSchema = z.infer<typeof tokenSchema>;
+export type TokenPayload = z.infer<typeof tokenPayload>;
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy){
     constructor(config: ConfigService<EnvSchema,true>){
@@ -23,9 +23,9 @@ export class JwtStrategy extends PassportStrategy(Strategy){
         })
     }
 
-    async validate(payload: TokenSchema) {
+    async validate(payload: TokenPayload) {
         return{
-          Token: tokenSchema.parse(payload)  //validação do payload usando zod
+          Token: tokenPayload.parse(payload)  //validação do payload usando zod
         }
         
     }
