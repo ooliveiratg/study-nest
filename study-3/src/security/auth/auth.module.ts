@@ -18,6 +18,7 @@ import { JwtStrategy } from "./jwt.strategy";
                 //infer:true faz com que o typescript infira o tipo da variavel (transformando string em number)
                 const secret = config.get('JWT_SECRET', { infer: true });
                 return {
+                    secret,
                     signOptions:{
                         expiresIn: '1d' 
                     }

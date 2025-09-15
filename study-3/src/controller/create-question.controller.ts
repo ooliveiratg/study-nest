@@ -10,7 +10,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 const createQuestionBodySchema = z.object({
     title: z.string().min(2).max(100),
-    content: z.email()
+    content: z.string().min(2).max(1000)
 });
 
 type CreateQuestionBody = z.infer<typeof createQuestionBodySchema>;

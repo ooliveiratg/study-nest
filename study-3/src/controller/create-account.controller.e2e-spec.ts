@@ -4,7 +4,8 @@ import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { email } from 'zod';
-test('', () => {
+import bcrypt from "bcrypt"
+describe('Create Account (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
@@ -18,11 +19,11 @@ test('', () => {
     await app.init();
   });
 
-  test('[POST] / account', async () => {
+  test('[POST] / accounts', async () => {
     const response = await request(app.getHttpServer()).post('/accounts').send({
       name: 'John',
       email: 'john@john.com',
-      password: '123456',
+      password: '123456'
     });
     expect(response.statusCode).toBe(201);
     const userOnDataBase = await prisma.user.findUnique({
@@ -32,4 +33,9 @@ test('', () => {
     })
     expect(userOnDataBase).toBeTruthy()
   });
+
+  afterAll(async () => {
+  await prisma.user.deleteMany({ where: { email: 'john@john.com' } });
+  await app.close();
+});
 });
