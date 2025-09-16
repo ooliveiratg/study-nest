@@ -1,12 +1,12 @@
-import { AppModule } from '@/app.module';
-import { PrismaService } from '@/prisma/prisma.service';
+import { AppModule } from '../../app.module';
+import { PrismaService } from '@/infra/db/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import bcrypt from "bcryptjs";
 import { ConfigService } from '@nestjs/config';
-import { EnvSchema } from '@/env';
+import { EnvSchema } from '@/infra/env';
 
 describe('Create Question (E2E)', () => {
   let app: INestApplication;
