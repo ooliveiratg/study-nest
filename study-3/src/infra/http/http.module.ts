@@ -4,7 +4,8 @@ import { CreateAccoutController } from "./controller/create-account.controller";
 import { CreateQuestionController } from "./controller/create-question.controller";
 import { FetchRecentQuestionsController } from "./controller/fetch-recent-questions.controller";
 import { PrismaService } from "../db/prisma/prisma.service";
-import { DatabaseModule } from "@faker-js/faker";
+import { CreateQuestionUseCase } from "@/domain/forum/application/use-cases/create-question";
+import { DatabaseModule } from "../db/db.module";
 
 @Module({
     imports: [
@@ -17,7 +18,7 @@ import { DatabaseModule } from "@faker-js/faker";
         CreateQuestionController
     ],
 
-    providers:[]
+    providers:[CreateQuestionUseCase]
 })
 
 export class HttpModule{}
