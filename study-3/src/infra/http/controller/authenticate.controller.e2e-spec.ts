@@ -3,7 +3,7 @@ import { PrismaService } from '@/infra/db/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import bcrypt from "bcrypt"
+import bcrypt from 'bcrypt';
 
 describe('Authenticate (E2E)', () => {
   let app: INestApplication;
@@ -39,7 +39,7 @@ describe('Authenticate (E2E)', () => {
     });
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
-        access_token: expect.any(String)
-    })
+      access_token: expect.any(String),
+    });
   });
 });

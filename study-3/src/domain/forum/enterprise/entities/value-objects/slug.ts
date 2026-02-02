@@ -1,12 +1,12 @@
 export class Slug {
-  public value: string
+  public value: string;
 
   private constructor(value: string) {
-    this.value = value
+    this.value = value;
   }
 
   static create(value: string) {
-    return new Slug(value)
+    return new Slug(value);
   }
 
   /**
@@ -25,8 +25,8 @@ export class Slug {
       .replace(/[^\w-]+/g, '')
       .replace(/_/g, '-')
       .replace(/--+/g, '-')
-      .replace(/-$/g, '')
+      .replace(/-$/g, '');
 
-    return new Slug(slugText)
+    return new Slug(slugText);
   }
 }

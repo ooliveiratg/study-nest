@@ -1,47 +1,54 @@
-import { Body, ConflictException, Controller, HttpCode, Post, UsePipes } from "@nestjs/common";
-import { PrismaService } from "@/infra/db/prisma/prisma.service";
+import {
+  Body,
+  ConflictException,
+  Controller,
+  HttpCode,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
+import { PrismaService } from '@/infra/db/prisma/prisma.service';
 import { hash } from 'bcrypt';
-import { z }    from 'zod';
-import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
+import { z } from 'zod';
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe';
 
 const createAccountSchema = z.object({
-    name: z.string().min(2).max(100),
-    email: z.email(),
-    password: z.string().min(6).max(100)
+  name: z.string().min(2).max(100),
+  email: z.email(),
+  password: z.string().min(6).max(100),
 });
 
 type CreateAccountBody = z.infer<typeof createAccountSchema>;
 
 @Controller('/accounts')
 export class CreateAccoutController {
-    constructor(private prisma: PrismaService) {}
-    
-    @Post()
-    @HttpCode(201)
-    @UsePipes(new ZodValidationPipe(createAccountSchema))
-    async handle(@Body() body: CreateAccountBody) {
-        //validação das requisições usando zod
-            const { name, email, password } = body;
+  constructor(private prisma: PrismaService) {}
 
-        const userWithSameEmail = await this.prisma.user.findUnique({
-            where: {
-                email
-            }
-        });
+  @Post()
+  @HttpCode(201)
+  @UsePipes(new ZodValidationPipe(createAccountSchema))
+  async handle(@Body() body: CreateAccountBody) {
+    //validação das requisições usando zod
+    const { name, email, password } = body;
 
-        const hashedPassword = await hash(password, 8);
+    const userWithSameEmail = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
-        if (userWithSameEmail) {
-            throw new ConflictException('User with this email already exists');
-        }
+    const hashedPassword = await hash(password, 8);
 
-            await this.prisma.user.create({
-                data: {
-                    name,
-                    email,
-                    password : hashedPassword
-                }
-            });
-            return { message: 'Account created successfully'};
-        }
+    if (userWithSameEmail) {
+      throw new ConflictException('User with this email already exists');
     }
+
+    await this.prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+    return { message: 'Account created successfully' };
+  }
+}

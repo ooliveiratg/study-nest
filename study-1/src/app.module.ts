@@ -7,10 +7,12 @@ import { PrismaMemberRepository } from './repository/prisma/prisma-member-reposi
 @Module({
   imports: [],
   controllers: [AppController],
-  providers: [PrismaService,
+  providers: [
+    PrismaService,
     {
-    provide: MemberRepository,
-      useClass: PrismaMemberRepository
-  }],
+      provide: MemberRepository,
+      useClass: PrismaMemberRepository,
+    },
+  ],
 })
 export class AppModule {}

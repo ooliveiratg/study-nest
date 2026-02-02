@@ -6,15 +6,11 @@ import { MemberRepository } from './repository/member-repository';
 
 @Controller('app')
 export class AppController {
-  constructor(
-   private MemberRepository: MemberRepository
-    ) {
-  }
+  constructor(private MemberRepository: MemberRepository) {}
 
   @Post('hello')
   async getHello(@Body() body: CreateMemberBody) {
-    const {name,memberFunction} = body;
-   await this.MemberRepository.create(name,memberFunction)
-
+    const { name, memberFunction } = body;
+    await this.MemberRepository.create(name, memberFunction);
   }
 }

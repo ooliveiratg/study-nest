@@ -36,32 +36,31 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
         createdAt: 'desc',
       },
       take: 20,
-      skip: (page - 1) + 20
+      skip: page - 1 + 20,
     });
-    return questions.map(prismaQuestionMapper.toDomain)
+    return questions.map(prismaQuestionMapper.toDomain);
   }
   async save(question: Question): Promise<void> {
-    const data = prismaQuestionMapper.toPrisma(question)
+    const data = prismaQuestionMapper.toPrisma(question);
     await this.prisma.question.update({
       where: {
-        id: data.id
+        id: data.id,
       },
-      data
-    })
-   
+      data,
+    });
   }
   async create(question: Question): Promise<void> {
-    const data = prismaQuestionMapper.toPrisma(question)
+    const data = prismaQuestionMapper.toPrisma(question);
     await this.prisma.question.create({
-    data,
-   })
+      data,
+    });
   }
   async delete(question: Question): Promise<void> {
-     const data = prismaQuestionMapper.toPrisma(question)
+    const data = prismaQuestionMapper.toPrisma(question);
     await this.prisma.question.delete({
       where: {
-        id: data.id
-      }
-    })
+        id: data.id,
+      },
+    });
   }
 }

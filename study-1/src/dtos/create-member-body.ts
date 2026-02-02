@@ -1,8 +1,8 @@
-import {IsNotEmpty} from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateMemberBody {
   @IsNotEmpty()
-  name:string;
+  name: string;
   @IsNotEmpty()
-  memberFunction:string;
+  memberFunction: string;
 }

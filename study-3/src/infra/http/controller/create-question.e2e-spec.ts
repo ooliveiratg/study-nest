@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { EnvSchema } from '@/infra/env';
 
@@ -38,7 +38,7 @@ describe('Create Question (E2E)', () => {
 
     const accessToken = jwt.sign(
       { sub: user.id },
-      { secret: config.get('JWT_SECRET', { infer: true }), expiresIn: '1d' }
+      { secret: config.get('JWT_SECRET', { infer: true }), expiresIn: '1d' },
     );
 
     const response = await request(app.getHttpServer())
@@ -47,7 +47,7 @@ describe('Create Question (E2E)', () => {
       .send({
         title: 'new question',
         content: 'question content',
-        slug: 'new-question'
+        slug: 'new-question',
       });
 
     console.log(response.status, response.body);

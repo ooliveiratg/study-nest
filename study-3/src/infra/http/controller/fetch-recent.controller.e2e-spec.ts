@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { EnvSchema } from '@/infra/env';
 
@@ -15,7 +15,7 @@ describe('Fetch recent questions (E2E)', () => {
   let config: ConfigService<EnvSchema, true>;
 
   beforeAll(async () => {
-      console.log('Iniciando beforeAll');
+    console.log('Iniciando beforeAll');
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -39,25 +39,25 @@ describe('Fetch recent questions (E2E)', () => {
 
     const accessToken = jwt.sign(
       { sub: user.id },
-      { secret: config.get('JWT_SECRET', { infer: true }), expiresIn: '1d' }
+      { secret: config.get('JWT_SECRET', { infer: true }), expiresIn: '1d' },
     );
 
     await prisma.question.createMany({
-        data:[
-            {
-                title: 'questions01',
-                slug: 'question 01',
-                content: 'question01',
-                authorId: user.id
-            },
-            {
-                title: 'questions02',
-                slug: 'question 02',
-                content: 'question02',
-                authorId: user.id
-            },
-        ]
-    })
+      data: [
+        {
+          title: 'questions01',
+          slug: 'question 01',
+          content: 'question01',
+          authorId: user.id,
+        },
+        {
+          title: 'questions02',
+          slug: 'question 02',
+          content: 'question02',
+          authorId: user.id,
+        },
+      ],
+    });
 
     const response = await request(app.getHttpServer())
       .get('/questions')
@@ -68,12 +68,11 @@ describe('Fetch recent questions (E2E)', () => {
 
     expect(response.status).toBe(200);
 
-    
     expect(response.body).toEqual({
-        questions:[
-            expect.objectContaining({ title: 'questions01'}),
-            expect.objectContaining({ title: 'questions02'})
-        ]
+      questions: [
+        expect.objectContaining({ title: 'questions01' }),
+        expect.objectContaining({ title: 'questions02' }),
+      ],
     });
   });
 });
