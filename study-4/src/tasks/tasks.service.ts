@@ -1,68 +1,91 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Task } from './entities/task.entity';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
+import { PrismaService } from 'src/app/prisma/prisma.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 @Injectable()
 export class TasksService {
-  private tasks: Task[] = [
-    {
-      id: 1,
-      name: 'Thiago',
-      description: 'aprendendo nest',
-      completed: false,
-    },
-  ];
-  findAll() {
-    return this.tasks;
+  constructor(private prisma: PrismaService) {}
+
+  async findAll(paginationDto?: PaginationDto) {
+    if (!paginationDto) return null;
+    const { limit = 10, offset = 0 } = paginationDto;
+    const allTasks = await this.prisma.task.findMany({
+      take: limit,
+      skip: offset,
+    });
+    return allTasks;
   }
 
-  listOneTask(id: string) {
-    const task = this.tasks.find((task) => task.id === Number(id));
-    if (task) return task;
-    throw new HttpException('Não existe', HttpStatus.NOT_FOUND);
+  async listOneTask(id: number) {
+    const task = await this.prisma.task.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!task) {
+      throw new HttpException('Tarefa não encontrada', HttpStatus.NOT_FOUND);
+    }
+    return task;
   }
 
-  create(createTaskDto: CreateTaskDto) {
-    const newId = this.tasks.length + 1;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const newTasks = {
-      id: newId,
-      ...createTaskDto,
-      completed: false,
-    };
-    //adicionar um item a mais
-    this.tasks.push(newTasks);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return createTaskDto;
+  async create(createTaskDto: CreateTaskDto) {
+    const newITask = await this.prisma.task.create({
+      data: {
+        name: createTaskDto.name,
+        description: createTaskDto.description,
+        completed: false,
+      },
+    });
+    return newITask;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  update(id: string, updateTaskDto: UpdateTaskDto) {
+  async update(id: number, updateTaskDto: UpdateTaskDto) {
     //findIndex devolve a posição do index no array
-    const taskIndex = this.tasks.findIndex((task) => task.id === Number(id));
+    const findTask = await this.prisma.task.findFirst({
+      where: {
+        id: id,
+      },
+    });
 
-    if (taskIndex < 0) {
-      throw new HttpException('Não existe', HttpStatus.NOT_FOUND);
+    if (!findTask) {
+      throw new NotFoundException('Usuario não encontrado');
     }
 
-    const taskItem = this.tasks[taskIndex];
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.tasks[taskIndex] = {
-      ...taskItem,
-      ...updateTaskDto,
-    };
-    return 'tarefa atualizada';
+    const task = await this.prisma.task.update({
+      where: {
+        id: findTask.id,
+      },
+      data: updateTaskDto,
+    });
+
+    return task;
   }
 
-  delete(id: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const taskIndex = this.tasks.findIndex((task) => task.id === Number(id));
+  async delete(id: number) {
+    const findTask = await this.prisma.task.findFirst({
+      where: {
+        id: id,
+      },
+    });
 
-    if (taskIndex < 0) {
-      throw new HttpException('Removeu', HttpStatus.NOT_FOUND);
+    if (!findTask) {
+      throw new NotFoundException('Usuario não encontrado');
     }
-    this.tasks.splice(taskIndex, 1);
-    return 'certinho';
+
+    const task = await this.prisma.task.delete({
+      where: {
+        id: findTask.id,
+      },
+    });
+    return task;
   }
 }
