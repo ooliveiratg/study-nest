@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/app/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -52,6 +53,60 @@ export class UsersService {
     } catch (err) {
       console.log(err);
       throw new BadRequestException('Falha ao cadastrar usuário');
+    }
+  }
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) throw new BadRequestException('Usuário não encontrado');
+
+      const updateUser = await this.prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          name: updateUserDto.name ? updateUserDto.name : user.name,
+          passwordHash: updateUserDto.password
+            ? updateUserDto.password
+            : user.passwordHash,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      });
+      return updateUser;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('Falha ao atualizar usuário usuário');
+    }
+  }
+
+  async deleteUser(id: number) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) throw new BadRequestException('Usuário não encontrado');
+
+      await this.prisma.user.delete({
+        where: {
+          id: user.id,
+        },
+      });
+      return { message: 'usuário deletado com sucesso' };
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('Falha ao deletar usuário usuário usuário');
     }
   }
 }
