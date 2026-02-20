@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -37,14 +38,20 @@ export class TasksService {
   }
 
   async create(createTaskDto: CreateTaskDto) {
-    const newITask = await this.prisma.task.create({
-      data: {
-        name: createTaskDto.name,
-        description: createTaskDto.description,
-        completed: false,
-      },
-    });
-    return newITask;
+    try {
+      const newITask = await this.prisma.task.create({
+        data: {
+          name: createTaskDto.name,
+          description: createTaskDto.description,
+          completed: false,
+          userId: createTaskDto.userId,
+        },
+      });
+      return newITask;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('Falha ao cadastrar tarefa');
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -64,7 +71,15 @@ export class TasksService {
       where: {
         id: findTask.id,
       },
-      data: updateTaskDto,
+      data: {
+        name: updateTaskDto.name ? updateTaskDto.name : findTask.name,
+        description: updateTaskDto.description
+          ? updateTaskDto.description
+          : findTask.description,
+        completed: updateTaskDto.completed
+          ? updateTaskDto.completed
+          : findTask.completed,
+      },
     });
 
     return task;

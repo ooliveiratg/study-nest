@@ -46,6 +46,7 @@ export class UsersService {
           email: true,
           name: true,
           createdAt: true,
+          Task: true,
         },
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
